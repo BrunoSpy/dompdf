@@ -647,6 +647,16 @@ class DOMPDF {
       $doc->preserveWhiteSpace = true;
       $doc->loadHTML( mb_convert_encoding( $str , 'HTML-ENTITIES' , 'UTF-8' ) );
 
+        // Remove #text children nodes in nodes that shouldn't have
+        $tag_names = array("html", "table", "tbody", "thead", "tfoot", "tr");
+        foreach ($tag_names as $tag_name) {
+            $nodes = $doc->getElementsByTagName($tag_name);
+
+            foreach ($nodes as $node) {
+                self::remove_text_nodes($node);
+            }
+        }
+
       // If some text is before the doctype, we are in quirksmode
       if ( preg_match("/^(.+)<!doctype/i", ltrim($str), $matches) ) {
         $quirksmode = true;
